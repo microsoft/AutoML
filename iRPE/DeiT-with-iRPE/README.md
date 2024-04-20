@@ -72,7 +72,7 @@ For example, we train DeiT-S with contextual product relative position encoding 
 
 Run the following command:
 ```bash
-python -m torch.distributed.launch --nproc_per_node=8 --use_env main.py --model deit_small_patch16_224_ctx_product_50_shared_k --batch-size 128 --data-path ./ImageNet/ --output_dir ./outputs/ --load-tar
+torchrun --nproc_per_node=8 main.py --model deit_small_patch16_224_ctx_product_50_shared_k --batch-size 128 --data-path ./ImageNet/ --output_dir ./outputs/ --load-tar
 ```
 
 You can remove the flag `--load-tar` if storing images as individual files : )
@@ -80,7 +80,7 @@ You can remove the flag `--load-tar` if storing images as individual files : )
 ## Evaluation
 The step is similar to training. Add `--eval --resume <the checkpoint path>`.
 ```bash
-python -m torch.distributed.launch --nproc_per_node=8 --use_env main.py --model deit_small_patch16_224_ctx_product_50_shared_k --batch-size 128 --data-path ./ImageNet/ --output_dir ./outputs/ --load-tar --eval --resume deit_small_patch16_224_ctx_product_50_shared_k.pth
+torchrun --nproc_per_node=8 main.py --model deit_small_patch16_224_ctx_product_50_shared_k --batch-size 128 --data-path ./ImageNet/ --output_dir ./outputs/ --load-tar --eval --resume deit_small_patch16_224_ctx_product_50_shared_k.pth
 ```
 
 `--resume <the checkpoint path>` can be replaced by `--pretrained`, then the checkpoint will be downloaded automatically. The download directory is usually `$HOME/.cache/torch/hub/checkpoints`.

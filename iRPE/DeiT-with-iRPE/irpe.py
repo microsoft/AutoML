@@ -1,17 +1,21 @@
 """The implementation of iRPE (image relative position encoding)."""
 from easydict import EasyDict as edict
+import os
+import sys
 import math
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+sys.path.append(os.path.dirname(__file__))
 try:
     from rpe_ops.rpe_index import RPEIndexFunction
-except ImportError:
+except ImportError as e:
     RPEIndexFunction = None
     import warnings
     RED_STR = "\033[91m{}\033[00m"
-    warnings.warn(RED_STR.format("[WARNING] The module `rpe_ops` is not built. \
+    warnings.warn(RED_STR.format("[WARNING] {e}. \
+The module `rpe_ops` is not built. \
 For better training performance, please build `rpe_ops`."),)
 
 

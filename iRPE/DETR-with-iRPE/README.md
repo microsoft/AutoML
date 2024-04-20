@@ -37,7 +37,7 @@ pip install -r ./requirements.txt
 Although iRPE can be implemented by PyTorch native functions, the backward speed of PyTorch index function is very slow. We implement CUDA operators for more efficient training and recommend to build it.
 `nvcc` is necessary to build CUDA operators.
 ```bash
-cd rpe_ops/
+cd models/rpe_attention/rpe_ops/
 python setup.py install --user
 ```
 
@@ -132,12 +132,12 @@ If we want a image relative position encoding with contextual product shared-hea
 ## Training
 - Train a DETR-ResNet50 with iRPE (contextual product shared-head `9 x 9` buckets) for **150 epochs**:
 ```bash
-python -m torch.distributed.launch --nproc_per_node=8 --use_env main.py --lr_drop 100 --epochs 150 --coco_path ./coco_data --enc_rpe2d rpe-2.0-product-ctx-1-k --output_dir ./output'
+torchrun --nproc_per_node=8 main.py --lr_drop 100 --epochs 150 --coco_path ./coco_data --enc_rpe2d rpe-2.0-product-ctx-1-k --output_dir ./output'
 ```
 
 - Train a DETR-ResNet50 with iRPE (contextual product shared-head `9 x 9` buckets) for **300 epochs**:
 ```bash
-python -m torch.distributed.launch --nproc_per_node=8 --use_env main.py --lr_drop 200 --epochs 300 --coco_path ./coco_data --enc_rpe2d rpe-2.0-product-ctx-1-k --output_dir ./output'
+torchrun --nproc_per_node=8 main.py --lr_drop 200 --epochs 300 --coco_path ./coco_data --enc_rpe2d rpe-2.0-product-ctx-1-k --output_dir ./output'
 ```
 
 where `--nproc_per_node 8` means using 8 GPUs to train the model. `/coco_data` is the dataset folder, and `./output` is the model checkpoint folder.
@@ -145,7 +145,7 @@ where `--nproc_per_node 8` means using 8 GPUs to train the model. `/coco_data` i
 ## Evaluation
 The step is similar to training. Add the checkpoint path and the flag `--eval --resume <the checkpoint path>`.
 ```bash
-python -m torch.distributed.launch --nproc_per_node=8 --use_env main.py --lr_drop 100 --epochs 150 --coco_path ./coco_data --enc_rpe2d rpe-2.0-product-ctx-1-k --output_dir ./output --eval --resume rpe-2.0-product-ctx-1-k.pth'
+torchrun --nproc_per_node=8 main.py --lr_drop 100 --epochs 150 --coco_path ./coco_data --enc_rpe2d rpe-2.0-product-ctx-1-k --output_dir ./output --eval --resume rpe-2.0-product-ctx-1-k.pth'
 ```
 
 ## Code Structure
@@ -157,7 +157,7 @@ File | Description
 [`models/rpe_attention/irpe.py`](./models/rpe_attention/irpe.py) | The implementation of image relative position encoding
 [`models/rpe_attention/multi_head_attention.py`](./models/rpe_attention/multi_head_attention.py) | The nn.Module `MultiheadAttention` with iRPE
 [`models/rpe_attention/rpe_attention_function.py`](./models/rpe_attention/rpe_attention_function.py) | The function `rpe_multi_head_attention_forward` with iRPE
-[`rpe_ops`](./rpe_ops) | The CUDA implementation of iRPE operators for efficient training
+[`models/rpe_attention/rpe_ops`](./models/rpe_attention/rpe_ops) | The CUDA implementation of iRPE operators for efficient training
 
 # Citing iRPE
 If this project is helpful for you, please cite it. Thank you! : )
